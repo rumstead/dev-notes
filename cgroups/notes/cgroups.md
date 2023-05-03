@@ -140,7 +140,11 @@ The `cpu.cfs_period_us` is static across all the containers. However, we can see
 
 More information on [cpu cfs tunables]. 
 
-### enforcement of cpu floors and ceilings
+### guarantee/enforcement of cpu floors and ceilings
+| CFS tunable      | defined by                         | purpose                                                                                                                                                                                                                                                                                |
+|------------------|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| cpu.shares       | container's resources.requests.cpu | the container can use more than what is requested. if there is contention, the value is proportional to other cgroups on the node. meaning, if there are two tasks that have their cpu.shares set at 100 and 200 respectively the 200 will receive double the cpu time |
+| cpu.cfs_quota_us | container's resources.limits.cpu   | the total amount of time a container can use the CPU in a period (defined by cpu.cfs_period_us)   
 
 ## memory resources
 
