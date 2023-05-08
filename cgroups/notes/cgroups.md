@@ -146,8 +146,6 @@ More information on [cpu cfs tunables].
 | cpu.shares       | container's resources.requests.cpu | the container can use more than what is requested. if there is contention, the value is proportional to other cgroups on the node. meaning, if there are two tasks that have their cpu.shares set at 100 and 200 respectively the 200 will receive double the cpu time |
 | cpu.cfs_quota_us | container's resources.limits.cpu   | the total amount of time a container can use the CPU in a period (defined by cpu.cfs_period_us)   
 
-## memory resources
-
 
 [cgroup subsystem]: https://man7.org/linux/man-pages/man7/cgroups.7.html#CGROUPS_VERSION_1
 [pause container]: https://kubernetes.io/docs/concepts/windows/intro/#pause-container
