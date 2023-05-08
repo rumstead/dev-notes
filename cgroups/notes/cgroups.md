@@ -101,7 +101,7 @@ lima-rancher-desktop:/sys/fs/cgroup/cpu/kubepods/burstable/pod28c6b84f-4b17-4bac
 30000
 ```
 
-The `cpu.cfs_quota_us` looks like our cpu limits added together * 100. The `us` is for milliseconds. The files translate to allow the CPU to use .03 seconds of the CPU every .1 seconds.
+The `cpu.cfs_quota_us` looks like our cpu limits added together * 100. The `us` is for microseconds. The files translate to allow the CPU to use .03 seconds of the CPU every .1 seconds.
 
 If we check all the cpu configuration for the containers (or directories underneath) we can see their limits as well.
 
