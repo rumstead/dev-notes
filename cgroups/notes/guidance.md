@@ -1,4 +1,4 @@
-# RFC-7028 K8s Resource Allocation Philosophy
+# K8s Resource Allocation Philosophy
 
 1. [Summary](#Summary)
 2. [Pod’s Effective Resources](#pods-effective-resources)
