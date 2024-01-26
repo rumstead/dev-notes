@@ -1,3 +1,6 @@
 go 1.21
 
-use ./../go-hello-module
+use (
+	./../go-hello-module
+	.
+)
