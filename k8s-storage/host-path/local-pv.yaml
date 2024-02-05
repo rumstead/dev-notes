@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+spec:
+  hostPath:
+    path: /Users/rumstead/tmp/pod-volume-test
+  accessModes:
+    - ReadOnlyMany
+  capacity:
+    storage: 1Mi
