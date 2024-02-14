@@ -8,9 +8,15 @@ spec:
       image: nginx
       volumeMounts:
         - name: local-volume
-          mountPath: /usr/local/bfm/
+          mountPath: /usr/local/bfm/dirOne
+        - name: local-volume-two
+          mountPath: /usr/local/bfm/dirTwo
   volumes:
     - name: local-volume
       persistentVolumeClaim:
-        claimName: nfs-pvc
+        claimName: nfs-pvc-dir-one
+        readOnly: true
+    - name: local-volume-two
+      persistentVolumeClaim:
+        claimName: nfs-pvc-dir-two
         readOnly: true

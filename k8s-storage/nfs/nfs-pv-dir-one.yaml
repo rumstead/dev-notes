@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv-dir-one
+spec:
+  mountOptions:
+    - vers=4
+    - loud
+  nfs:
+    path: /
+    server: 192.168.205.2
+  accessModes:
+    - ReadOnlyMany
+  capacity:
+    storage: 50Mi

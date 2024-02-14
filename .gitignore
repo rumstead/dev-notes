@@ -3,3 +3,5 @@
 **/bazel-bin
 **/bazel-out
 **  /bazel-testlogs
+/argo-cd/kust-apps/apps.json
+/argo-cd/kust-apps/kust-apps.json

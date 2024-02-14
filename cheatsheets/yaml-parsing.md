@@ -1,6 +1,10 @@
 ## Argo CD
 ### Get active AKS clusters with more than 5 applications
 `argocd cluster list -o json | jq -r ' .[] | select(.info.applicationsCount > 5) | [.name, .info.applicationsCount] | @tsv' | grep aks | wc -l`
+### Get kustomize output from apps
+`argocd apps list -o json | jq -r '.[].spec.source | select(has("helm") | not ) | select(.repoURL != "https://a-url")'`
+#### Convert the above to an array of objects
+`jq -r '.[].spec.source | select(has("helm") | not ) | select(.repoURL != "https://a-url")' apps.json | jq -s '.' > kust-apps.json`
 
 ## Kubernetes
 ### Get annotations on all ingress resources
