@@ -1,4 +1,16 @@
 # Running Argo CD locally
+## Turning off TLS between the pods
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cmd-params-cm
+data:
+  controller.repo.server.plaintext: "true"
+  reposerver.disable.tls: "true"
+  server.repo.server.plaintext: "true"
+  applicationsetcontroller.enable.leader.election: "true"
+```
 ## Application Controller
 Set the below env variables. This can be done on the command line or in the run configuration of an IDE
 ```shell
@@ -14,6 +26,10 @@ If you are also running the repo server locally, you can omit the forwarding.
 ```shell
 kubectl port-forward service/argocd-redis 6379:6379 &> /dev/null &
 kubectl port-forward service/argocd-repo-server 8090:8081 &> /dev/null &
+```
+Finally, scale down the application controller running in the cluster (or don't)
+```shell
+kubectl scale sts argocd-application-controller --replicas=0
 ```
 ## ApplicationSet Controller
 Set the below env variables. This can be done on the command line or in the run configuration of an IDE
@@ -43,7 +59,9 @@ REDIS_SERVER=localhost:6379
 **PLEASE BE CAREFUL AS THIS WILL USE YOUR DEFAULT KUBECONFIG!**
 Port forward the redis service.
 
-`kubectl port-forward service/argocd-redis 6379:6379 &> /dev/null &`
+```shell
+kubectl port-forward service/argocd-redis 6379:6379 &> /dev/null &
+```
 
 ##Troubleshooting
 "A keychain cannot be found to store "<git repo>"
@@ -59,4 +77,7 @@ git config --local --unset credential.helper
 git config --system --add credential.helper osxkeychain
 ```
 Manual Editing: git config --show-origin --get credential.helper
-`You can check if the credential helper was successfully removed via the following: git config --list | grep credential`
+You can check if the credential helper was successfully removed via the following: 
+```
+git config --list | grep credential
+```
