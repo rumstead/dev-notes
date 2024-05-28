@@ -24,4 +24,4 @@
 ### Get AKS version
 `az aks show -g rg -n clustername --subscription sub  | grep -E "orchestratorVersion|kubernetesVersion"`
 ### Get all azure vnets under a resource group
-`az network vnet list --subscription ALADDIN-DEV-DEV | jq '.[] | select(.name == "aladdin-dev-dev-muse2-vnet") | .subnets | .[] | .name'`
+`az network vnet list --subscription sub | jq '.[] | select(.name == vnet-name") | .subnets | .[] | .name'`
