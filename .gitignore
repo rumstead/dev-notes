@@ -5,3 +5,4 @@
 **  /bazel-testlogs
 /argo-cd/kust-apps/apps.json
 /argo-cd/kust-apps/kust-apps.json
+/k8s-storage/nfs-real/*

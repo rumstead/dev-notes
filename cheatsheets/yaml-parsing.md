@@ -15,6 +15,8 @@
 `k get application --no-headers -o jsonpath='{range .items[*]}{.metadata.finalizers}{"\n"}{end}'`
 ### Get a specific label with jsonpath
 `k get ds -n logging fluent-bit -o jsonpath='{.metadata.labels.kubernetes\.io/cluster-service}'`
+### Get all pod images
+`kgp -A -o yaml | yq '.items[] | .spec.containers[].image'`
 
 ## Azure CLI
 ### Get Azure K8s API Endpoint
