@@ -1,0 +1,4 @@
+FROM ubuntu:latest
+LABEL authors="rumstead"
+ADD hello-world.txt .
+ENTRYPOINT ["top", "-b"]

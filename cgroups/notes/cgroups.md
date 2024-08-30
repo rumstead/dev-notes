@@ -34,7 +34,8 @@ lima-rancher-desktop:/sys/fs/cgroup$ find . -name "*28c6b84f-4b17-4bac-9ca4-c7c7
 ```
 
 ## Inspecting the cgroup subsystems
-Besides 'unified' each root directory in the above paths are a [cgroup subsystem] (aks resource controllers). If you clicked the link and read the Linux man page, you should have noticed that the subsystems here are V1.
+Besides 'unified', each root directory in the above paths are a [cgroup subsystem](https://man7.org/linux/man-pages/man7/cgroups.7.html#CGROUPS_VERSION_1)
+(aka resource controllers). If you clicked the link and read the Linux man page, you should have noticed that the subsystems here are V1.
 
 ```shell
 lima-rancher-desktop:/sys/fs/cgroup$ cd ./cpu/kubepods/burstable/pod28c6b84f-4b17-4bac-9ca4-c7c794ebfefc

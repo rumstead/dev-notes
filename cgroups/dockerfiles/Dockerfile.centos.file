@@ -1,0 +1,4 @@
+FROM centos:latest
+LABEL authors="rumstead"
+ADD hello-world.txt /tmp/
+ENTRYPOINT ["top", "-b"]
