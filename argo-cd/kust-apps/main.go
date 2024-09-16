@@ -10,27 +10,9 @@ import (
 	"os/exec"
 	"sync"
 	"time"
-
-	"github.com/google/go-github/v62/github"
 )
 
 func main() {
-	url := "https://github.com/rumstead/argocd-playground.git"
-	push := github.PushEvent{
-		Repo: &github.PushEventRepository{
-			HTMLURL:       &url,
-			DefaultBranch: github.String("main"),
-		},
-		Ref: github.String("refs/heads/main"),
-	}
-	marshal, err := json.Marshal(push)
-	if err != nil {
-		return
-	}
-	fmt.Println(string(marshal))
-}
-
-/*func main() {
 	start := time.Now()
 	file, err := os.ReadFile("argo-cd/kust-apps/kust-apps.json")
 	if err != nil {
@@ -62,8 +44,8 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Linted %d(%d) kustomize Argo CD applications to kustomize v5.3.0 in %v\n", total, errorCount, time.Since(start))
-}*/
+	fmt.Printf("Linted %d(%d) kustomize Argo CD applications to kustomize v5.4.3 in %v\n", total, errorCount, time.Since(start))
+}
 
 func createRequests(repoToGit map[string][]gitData, buildReq chan *gitData) {
 	defer close(buildReq)

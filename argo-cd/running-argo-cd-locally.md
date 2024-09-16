@@ -18,6 +18,7 @@ ARGOCD_APPLICATION_CONTROLLER_REPO_SERVER=localhost:8090
 ARGOCD_BINARY_NAME=argocd-application-controller
 REDIS_SERVER=localhost:6379
 ARGOCD_FAKE_IN_CLUSTER=true
+REDIS_PASSWORD=$(kubectl get secret argocd-redis -o jsonpath='{.data.auth}' | base64 -d)
 ```
 Port forward the redis and repo server services.
 
@@ -55,6 +56,7 @@ ARGOCD_BINARY_NAME=argocd-repo-server
 ARGOCD_GPG_ENABLED=false
 ARGOCD_REPO_SERVER_DISABLE_TLS=true
 REDIS_SERVER=localhost:6379
+REDIS_PASSWORD=$(kubectl get secret argocd-redis -o jsonpath='{.data.auth}' | base64 -d)
 ```
 **PLEASE BE CAREFUL AS THIS WILL USE YOUR DEFAULT KUBECONFIG!**
 Port forward the redis service.
