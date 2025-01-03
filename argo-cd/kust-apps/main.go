@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"time"
 )
@@ -86,9 +87,16 @@ func buildKustDir(buildReq <-chan *gitData, results chan<- *gitData, wg *sync.Wa
 		if err = runCommandWithCancel(temp, "git", "checkout", r.TargetRevision); err != nil {
 			r.Error = err
 		}
-
-		if err = runCommandWithCancel(temp, "kustomize", "build", "--enable-helm", r.Path); err != nil {
-			r.Error = err
+		count := 3
+		for count > 0 {
+			if err = runCommandWithCancel(temp, "kustomize", "build", "--enable-helm", r.Path); err != nil {
+				if strings.Contains(err.Error(), "timeout") {
+					count--
+				}
+				r.Error = err
+			} else {
+				count = 0
+			}
 		}
 		err = os.RemoveAll(temp)
 		if err != nil {
