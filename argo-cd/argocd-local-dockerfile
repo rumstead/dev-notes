@@ -1,12 +1,22 @@
-ARG BASE_IMAGE=docker.io/library/ubuntu:24.04@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef83375fe15
+ARG BASE_IMAGE=docker.io/library/ubuntu:24.04@sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab
 ####################################################################################################
 # Builder image
 # Initial stage which pulls prepares build dependencies and CLI tooling we need for our final image
 # Also used as the image in CI jobs so needs all dependencies
 ####################################################################################################
 FROM docker.io/library/golang:1.23.3@sha256:d56c3e08fe5b27729ee3834854ae8f7015af48fd651cd25d1e3bcf3c19830174 AS builder
-ADD https://puppet-yum.bfm.com/packages/3rd_party/certs/ca/corpcert.cer /usr/local/share/ca-certificates/internal-ca-bundle.crt
+ARG HTTP_PROXY
+ARG NO_PROXY
+ARG CORP_CA_URL
+ADD $CORP_CA_URL /usr/local/share/ca-certificates/internal-ca-bundle.crt
 RUN update-ca-certificates && echo 'deb http://archive.debian.org/debian buster-backports main' >> /etc/apt/sources.list
+
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTP_PROXY
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTP_PROXY
+ENV NO_PROXY=$NO_PROXY
+ENV no_proxy=$NO_PROXY
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     openssh-server \
@@ -81,12 +91,80 @@ USER $ARGOCD_USER_ID
 WORKDIR /home/argocd
 
 ####################################################################################################
+# Argo CD UI stage
+####################################################################################################
+FROM --platform=$BUILDPLATFORM docker.io/library/node:23.0.0@sha256:e643c0b70dca9704dff42e12b17f5b719dbe4f95e6392fc2dfa0c5f02ea8044d AS argocd-ui
+ARG HTTP_PROXY
+ARG NO_PROXY
+ARG CORP_CA_URL
+ADD $CORP_CA_URL /usr/local/share/ca-certificates/internal-ca-bundle.crt
+RUN update-ca-certificates
+
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/internal-ca-bundle.crt
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTP_PROXY
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTP_PROXY
+ENV NO_PROXY=$NO_PROXY
+ENV no_proxy=$NO_PROXY
+WORKDIR /src
+COPY ["ui/package.json", "ui/yarn.lock", "./"]
+
+RUN yarn install --network-timeout 200000 && \
+    yarn cache clean
+
+COPY ["ui/", "."]
+
+ARG ARGO_VERSION=latest
+ENV ARGO_VERSION=$ARGO_VERSION
+ARG TARGETARCH
+RUN HOST_ARCH=$TARGETARCH NODE_ENV='production' NODE_ONLINE_ENV='online' NODE_OPTIONS=--max_old_space_size=8192 yarn build
+
+####################################################################################################
+# Argo CD Build stage which performs the actual build of Argo CD binaries
+####################################################################################################
+FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.23.3@sha256:d56c3e08fe5b27729ee3834854ae8f7015af48fd651cd25d1e3bcf3c19830174 AS argocd-build
+ARG HTTP_PROXY
+ARG NO_PROXY
+ARG CORP_CA_URL
+ADD $CORP_CA_URL /usr/local/share/ca-certificates/internal-ca-bundle.crt
+RUN update-ca-certificates
+
+ENV HTTP_PROXY=$HTTP_PROXY
+ENV HTTPS_PROXY=$HTTP_PROXY
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTP_PROXY
+ENV NO_PROXY=$NO_PROXY
+ENV no_proxy=$NO_PROXY
+WORKDIR /go/src/github.com/argoproj/argo-cd
+
+COPY go.* ./
+RUN go mod download
+
+# Perform the build
+COPY . .
+COPY --from=argocd-ui /src/dist/app /go/src/github.com/argoproj/argo-cd/ui/dist/app
+
+ARG TARGETOS
+ARG TARGETARCH
+# These build args are optional; if not specified the defaults will be taken from the Makefile
+ARG GIT_TAG
+ARG BUILD_DATE
+ARG GIT_TREE_STATE
+ARG GIT_COMMIT
+RUN GIT_COMMIT=$GIT_COMMIT \
+    GIT_TREE_STATE=$GIT_TREE_STATE \
+    GIT_TAG=$GIT_TAG \
+    BUILD_DATE=$BUILD_DATE \
+    GOOS=$TARGETOS \
+    GOARCH=$TARGETARCH \
+    make argocd-all
+
+####################################################################################################
 # Final image
 ####################################################################################################
 FROM argocd-base
-WORKDIR /
-COPY dist/argocd /usr/local/bin/argocd
-WORKDIR /home/argocd
+COPY --from=argocd-build /go/src/github.com/argoproj/argo-cd/dist/argocd* /usr/local/bin/
 
 USER root
 RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-server && \
@@ -99,7 +177,5 @@ RUN ln -s /usr/local/bin/argocd /usr/local/bin/argocd-server && \
     ln -s /usr/local/bin/argocd /usr/local/bin/argocd-k8s-auth && \
     ln -s /usr/local/bin/argocd /usr/local/bin/argocd-commit-server
 
-ADD https://puppet-yum.bfm.com/packages/3rd_party/certs/ca/corpcert.cer /usr/local/share/ca-certificates/internal-ca-bundle.crt
-RUN update-ca-certificates
 USER $ARGOCD_USER_ID
 ENTRYPOINT ["/usr/bin/tini", "--"]

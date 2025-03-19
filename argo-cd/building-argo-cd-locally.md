@@ -12,3 +12,16 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
  -extldflags "-static"' \
  -o /Users/rumstead/.gvm/pkgsets/go1.19.9/global/argo-cd/dist/argocd ./cmd
 ```
+## Building the UI
+```shell
+yarn install
+TARGET_PLATFORM=linux HOST_ARCH=amd64 NODE_ENV=production NODE_ONLINE_ENV='online' NODE_OPTIONS=--max_old_space_size=8192 yarn build
+```
+
+## Building the Docker image
+```shell
+docker build --progress=plain --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY \ 
+--build-arg CORP_CA_URL=$CORP_CA_URL \ 
+-f Dockerfile.rumstead . -t "argocd:rumstead"
+```
+Remember to look at the `.dockerignore` for adding things from `./dist`

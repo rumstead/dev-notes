@@ -65,10 +65,10 @@ Port forward the redis service.
 kubectl port-forward service/argocd-redis 6379:6379 &> /dev/null &
 ```
 
-##Troubleshooting
+## Troubleshooting
 "A keychain cannot be found to store "<git repo>"
-When running the Applicationset controller (specifically with Git Generators) or the RepoServer, the components will be interacting with your local Git configuration.
-Specifically, if on Mac, it may try to store Git config in your keychain. To solve this, you need to temporarily unset your Git credential helper as follows below. NOTE - If the 1st command doesn't work, try alternative solutions listed below.
+When running the RepoServer it interacts with your local Git configuration.
+Specifically, if on Mac, it may try to store Git config in your keychain. To solve this, you need to temporarily unset your Git credential helper as follows below
 
 ```shell
 git config --system --unset credential.helper

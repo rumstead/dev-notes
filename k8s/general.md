@@ -1,0 +1,2 @@
+### Objects returned by client need to be read only
+https://github.com/kubernetes/code-generator/commit/87245b6442ebf48d87b67d31eb0418677836ba8a#diff-d645bf43d9617f9eb468a909d7aa9ae284f22ec45db4204ec7b33c631ce9c86chttps://github.com/kubernetes/code-generator/commit/87245b6442ebf48d87b67d31eb0418677836ba8a#diff-d645bf43d9617f9eb468a909d7aa9ae284f22ec45db4204ec7b33c631ce9c86c

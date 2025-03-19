@@ -1,12 +1,22 @@
 ## Argo CD
-### Get active AKS clusters with more than 5 applications
+### Get active AKS clusters with more than five applications
 `argocd cluster list -o json | jq -r ' .[] | select(.info.applicationsCount > 5) | [.name, .info.applicationsCount] | @tsv' | grep aks | wc -l`
 ### Get kustomize output from apps
 `argocd apps list -o json | jq -r '.[].spec.source | select(has("helm") | not ) | select(.repoURL != "https://a-url")' | jq -s`
-
 Use the above URL to filter out repos you don't want to lint, like cluster config based ones :)
 #### Convert the above to an array of objects
 `jq -r '.[].spec.source | select(has("helm") | not ) | select(.repoURL != "https://a-url")' apps.json | jq -s '.' > kust-apps.json`
+#### Get all "application like" resources under an argo cd application
+`argocd app list -o json | jq '[.[] | select(.status.resources != null)  | .status?.resources?[] | select(.kind == "Deployment" or .kind == "StatefulSet" or .kind == "DaemonSet")] | length'`
+#### Get all non-prod clusters
+```
+argocd cluster list -o json > clusters.json
+cat clusters.json | jq '.[] | select(.labels."kubernetes.cnp.io\/cluster.prod" == "false") | .labels."kubernetes.cnp.io\/environment"' | sort | uniq | sed -e 's/"//g'
+```
+#### Get all applicationsets with a cluster generator
+```
+k get applicationset --no-headers -o json | jq '[.items[] | select(.spec.generators[]? | .. | select(type == "object" and has("clusters"))) | .metadata.name] | length
+```
 
 ## Kubernetes
 ### Get annotations on all ingress resources
