@@ -64,11 +64,9 @@
    CNI overlay network → Pod Network Namespace → Container
    ```
 
-## Troubleshooting Interview with Ryan Underwood (August 11th)
+## ArgoCD Troubleshooting
 
-### ArgoCD Troubleshooting
-
-#### Common Deployment Issues
+### Common Deployment Issues
 
 1. **Sync Failures**
 	- **Symptoms**: Application stuck in "OutOfSync" state
@@ -91,7 +89,7 @@
 		- ConfigMap/Secret missing
 		- Resource limits too restrictive
 
-#### Cross-Environment Deployment Scenarios
+### Cross-Environment Deployment Scenarios
 
 1. **Environment-Specific Failures**
 	- **Investigation approach**:
@@ -105,7 +103,7 @@
 	- History-based rollback approach
 	- Data migration considerations during rollbacks
 
-### Multi-Cloud Kubernetes Management
+## Multi-Cloud Kubernetes Management
 
 1. **Cross-Cloud Networking Challenges**
 	- VPC peering configurations
@@ -118,7 +116,7 @@
 	- Creating effective on-call rotations and escalation paths
 	- Building automation to eliminate manual operations
 
-### Onboarding Experience Optimization
+## Onboarding Experience Optimization
 
 1. **Self-Service Platform Components**
 	- Templated service definitions
