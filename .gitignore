@@ -7,3 +7,5 @@
 /argo-cd/kust-apps/kust-apps.json
 /k8s/storage/nfs-real/*
 /argo-cd/kust-apps/apps.txt
+/rancher-desktop/rancher.sh
+/rancher-desktop/README.md

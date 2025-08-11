@@ -64,6 +64,52 @@
    CNI overlay network → Pod Network Namespace → Container
    ```
 
+### Q: How would you troubleshoot a service that can't connect to another service?
+**A:**
+1. Verify basic connectivity: `ping`, `traceroute`
+2. Check if service is listening: `ss -tuln | grep <port>` or `netstat -tuln | grep <port>`
+3. Test connectivity directly: `telnet <host> <port>` or `nc -zv <host> <port>`
+4. Examine firewall rules: `iptables -L -n`
+5. Check DNS resolution: `dig <hostname>`, `getent hosts <hostname>`
+6. Capture packets: `tcpdump -i <interface> host <target> and port <port> -n`
+7. Inspect service logs: `journalctl -u <service>` or application-specific logs
+
+### Q: What command would you use to check which process is listening on port 8080?
+**A:**
+```bash
+# Using ss (preferred)
+ss -tulpn | grep :8080
+
+# Using netstat
+netstat -tulpn | grep :8080
+
+# Using lsof
+lsof -i :8080
+
+# Find process listening on port in specific namespace (for containers)
+nsenter -t $(docker inspect -f '{{.State.Pid}}' <container>) -n ss -tulpn | grep :8080
+```
+
+### Q: Explain how CNI works in Kubernetes networking
+**A:** Container Network Interface (CNI) is a framework that:
+1. Dynamically provisions network interfaces to containers
+2. Assigns IP addresses and configures routes when pods are created
+3. Cleans up resources when pods are deleted
+4. Works through plugins (Calico, Flannel, etc.) that implement the CNI spec
+5. Handles pod-to-pod connectivity across nodes through overlay networks or native routing
+6. Configures network namespaces to isolate pod networking
+
+CNI plugins are invoked by kubelet when pods are scheduled/removed, ensuring consistent networking regardless of underlying infrastructure.
+
+### Q: How does kube-proxy implement service load balancing?
+**A:** kube-proxy implements Service abstractions through three modes:
+1. **iptables mode** (default): Creates NAT rules in iptables that randomly distribute traffic to backend pods. Rule complexity grows with service count.
+2. **IPVS mode**: Uses Linux kernel IPVS for more efficient load balancing with lower latency and better performance at scale. Supports more load balancing algorithms.
+3. **userspace mode** (legacy): Listens on ports and proxies connections to backends. Higher overhead.
+
+kube-proxy watches the Kubernetes API server for Service/Endpoint changes and updates rules accordingly.
+
+
 ## ArgoCD Troubleshooting
 
 ### Common Deployment Issues
