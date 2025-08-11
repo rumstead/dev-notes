@@ -22,6 +22,6 @@ TARGET_PLATFORM=linux HOST_ARCH=amd64 NODE_ENV=production NODE_ONLINE_ENV='onlin
 ```shell
 docker build --progress=plain --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY \ 
 --build-arg CORP_CA_URL=$CORP_CA_URL \ 
--f Dockerfile.rumstead . -t "argocd:rumstead"
+-f Dockerfile.rumstead . -t "argo-cd:rumstead"
 ```
 Remember to look at the `.dockerignore` for adding things from `./dist`
