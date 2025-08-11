@@ -1,5 +1,3 @@
-# MongoDB Linux Interview Study Guide
-
 ## Process Management
 
 ### Q: How would you find the process using the most CPU/memory on a Linux system?
