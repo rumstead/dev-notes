@@ -110,14 +110,14 @@ CNI plugins are invoked by kubelet when pods are scheduled/removed, ensuring con
 kube-proxy watches the Kubernetes API server for Service/Endpoint changes and updates rules accordingly.
 
 ### ISO stack
-Physical Layer: Hardware transmission (cables, radio waves, electrical signals)
-Data Link Layer: Frame formatting, MAC addresses, error detection (Ethernet, Wi-Fi)
-Network Layer: Routing, IP addressing, packet forwarding (IP, ICMP, OSPF)
-Transport Layer: End-to-end communication, reliability (TCP, UDP)
-Session Layer: Connection management, session establishment
-Presentation Layer: Data formatting, encryption, compression (SSL/TLS, JPEG)
-Application Layer: User interfaces, network services (HTTP, FTP, SMTP, DNS)
-Memory aid: "Please Do Not Throw Sausage Pizza Away"
+- Physical Layer: Hardware transmission (cables, radio waves, electrical signals)
+- Data Link Layer: Frame formatting, MAC addresses, error detection (Ethernet, Wi-Fi)
+- Network Layer: Routing, IP addressing, packet forwarding (IP, ICMP, OSPF)
+- Transport Layer: End-to-end communication, reliability (TCP, UDP)
+- Session Layer: Connection management, session establishment
+- Presentation Layer: Data formatting, encryption, compression (SSL/TLS, JPEG)
+- Application Layer: User interfaces, network services (HTTP, FTP, SMTP, DNS)
+- Memory aid: "Please Do Not Throw Sausage Pizza Away"
 
 
 
